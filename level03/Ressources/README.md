@@ -87,20 +87,20 @@ int __cdecl main(int argc, const char **argv, const char **envp)
 
 | Nom | Description |
 | --- | ----------- |
-| `<main>` | La fonction main fait un scanf de notre stdin et le place dans un int: `savedregs` puis appel la fonction `test` avec en parametre notre stdin et le nombre `322424845` |
-| `<test>` | La fonction test vas soustraire notre nombre a `322424845` puis vas faire un switch case avec le résultat, si on arrive a rentrer dans la case 21 cela vas nous faire entrer dans la fonction decrypt sinon courage avec le random: `v3 = rand()`|
-| `<decrypt>` | La fonction decrypt vas placer une chaine de caractere encrypter à l'interieur de `v4` puis vas `xor` `v4` avec notre nombre et compare le resultat de `v4` avec la chaine `"Congratulations!"` pour savoir si v4 a bien été decoder, cela nous donne acces à un shell, sinon cela nous affiche `"Invalid Password"`. |
+| `<main>` | La fonction main fait un scanf de notre stdin et le place dans un int: `savedregs` puis appel la fonction `test` avec en paramètre notre stdin et le nombre `322424845` |
+| `<test>` | La fonction test vas soustraire notre nombre a `322424845` puis vas faire un switch case avec le résultat, si on arrive à rentrer dans la case `21` cela vas nous faire entrer dans la fonction decrypt sinon courage avec le random: `v3 = rand()`|
+| `<decrypt>` | La fonction decrypt va placer une chaîne de caractères encrypter à l'intérieur de `v4` puis vas `xor` `v4` avec notre nombre et compare le résultat de `v4` avec la chaîne `"Congratulations!"` pour savoir si `v4` a bien été décoder, cela nous donne acèes à un shell, sinon cela nous affiche `"Invalid Password"`. |
 
 
 #### Conclusions:
-Nous allons devoir donner un nombre en entrée qui est entre `322424845-1 et 322424845-21` pour que l'operation de `test` nous envoie pas dans `decrypt` avec un nombre random. \
-Nous allons devoir trouver quel est le bon nombre pour que l'operation `xor` arrive a decrypter `v4`.
+Nous allons devoir donner un nombre en entrée qui est entre `322424845-1 et 322424845-21` pour que l'opération de `test` nous envoie pas dans `decrypt` avec un nombre random. \
+Nous allons devoir trouver quel est le bon nombre pour que l'opération `xor` arrive a décrypter `v4`.
 
 ----
 Résolution:
 ----
 
-Inverser l'operation xor sur chaque octets:
+Inverser l'opération xor sur chaque octets:
 
 ```shell
 "Q}|u`sfg~sf{}|a3" = 01010001 01111101 01111100 01110101 01100000 01110011 01100110 01100111 01111110 01110011 01100110 01111011 01111101 01111100 01100001 00110011
@@ -111,7 +111,7 @@ Résultat		   = 00010010 00010010 00010010 00010010 00010010 00010010 00010010 0
 ```
 Cela nous donne `00010010` à chaque fois, donc `18` en décimal.
 
-On devra donc donner `322424845 - 18 =  322424827` pour que test le transforme juste en `18` et que le xor fonctionne.
+On devra donc donner `322424845 - 18 =  322424827` pour que la fonction `test` le transforme juste en `18` et que le ̀`xor` fonctionne.
 
 #### Commande:
 ```bash

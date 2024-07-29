@@ -2,7 +2,7 @@
 
 ### Observation :
 En arrivant sur le level04 on trouve un exécutable nommé level04.\
-Quand nous essayons de le lancer cela nous demande un shellcode puis ecrit "child is exiting...". \
+Quand nous essayons de le lancer cela nous demande un shellcode puis écrit "child is exiting...". \
 Regardons donc avec gdb ou un decompilateur.
 
 ---

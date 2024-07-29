@@ -2,7 +2,7 @@
 
 ### Observation :
 En arrivant sur le level01 on trouve un exécutable nommé level01.\
-Quand nous essayons de le lancer cela nous demande un login, puis nous refuse l'acces. \
+Quand nous essayons de le lancer cela nous demande un login, puis nous refuse l'accès. \
 Regardons donc avec gdb ou un decompilateur.
 
 ---
@@ -60,27 +60,27 @@ int __cdecl main(int argc, const char **argv, const char **envp)
 
 | Nom | Description |
 | --- | ----------- |
-| `<main>` | Notre fonction main nous demande dans un premier temps de lui donner un nom d'utilisateur (stdin de 256 octets) puis appel la fonction `<verify_user_name>`, si le retour est bon il nous demande un password (stdin de 100 octets) puis appel la fonction `<verify_user_pass>`, ensuite dans tout les cas il retourne la chaine `"nope, incorrect password...\n"`.|
-| `<verify_user_name>` | Cette fonction vas juste verifier si notre `stdin` est egal à: `"dat_wil"` (uniquement 7 octets, cela ne compare donc pas le `\0`)|
+| `<main>` | Notre fonction main nous demande dans un premier temps de lui donner un nom d'utilisateur (stdin de 256 octets) puis appel la fonction `<verify_user_name>`, si le retour est bon, il nous demande un password (stdin de 100 octets) puis appel la fonction `<verify_user_pass>`, ensuite dans tous les cas, il retourne la chaîne `"nope, incorrect password...\n"`.|
+| `<verify_user_name>` | Cette fonction vas juste vérifier si notre `stdin` est égal à: `"dat_wil"` (uniquement 7 octets, cela ne compare donc pas le `\0`)|
 | `<verify_user_pass>` | cette fonction est similaire a `<verify_user_name>` sauf que cette fois si elle compare notre `stdin` à: `"admin"` (uniquement 5 octets, cela ne compare donc pas le `\0`).|
 
 
 #### Conclusions:
-Nous avons un programme qui a potentielement 2 buffer overflow, un pour chaque `stdin`. \
-Nous n'avons pas de moyen normal d'acceder a un shell dans le programme donc nous allons devoir injecter un `shellcode`. \
+Nous avons un programme qui a potentiellement 2 buffer overflow, un pour chaque `stdin`. \
+Nous n'avons pas de moyen normal d'accéder a un shell dans le programme donc nous allons devoir injecter un `shellcode`. \
 
 
 ----
 Résolution:
 ----
-Nous allons devoir injecter notre `shellcode` ou nous trouvons de la place, par exemple dans le premier `stdin` juste apres la chaine de 7 octets: `"dat_wil"`. \
-Nous devons aussi `jump` depuis la valeur de `return` sur notre `shellcode` grace au 2eme overflow de `stdin`. 
+Nous allons devoir injecter notre `shellcode` ou nous trouvons de la place, par exemple dans le premier `stdin` juste après la chaîne de 7 octets: `"dat_wil"`. \
+Nous devons aussi `jump` depuis la valeur de `return` sur notre `shellcode` grâce au 2eme overflow de `stdin`. 
 
 Pour se faire:
-- Nous allons donc ecrire dans le premier `stdin` la chaine `"dat_wil"` pour passer la premiere condition, puis mettre notre `shellcode` pour acceder au shell plus tard. 
-- Ensuite nous devons replir le reste de notre `stdin` avec des octets random (ou metre un \n). 
-- Nous allons par la suite trouver l'adresse de retour afin de pouvoir la modifier, pour jump sur notre shellcode qui se trouve à l'adresse du premier `buffer de stdin (+7 pour la chaine de caractere "dat_wil")`.
-- En regardans dans gdb on se rend compte que notre adresse de retour se trouve à `+79 octets` en partant de notre second `buffer (stdin)`, c'est la qu'il faut ecrire l'adresse ou se trouve notre `shellcode` pour qu'il soit executer.
+- Nous allons donc écrire dans le premier `stdin` la chaîne `"dat_wil"` pour passer la première condition, puis mettre notre `shellcode` pour accéder au shell plus tard. 
+- Ensuite, nous devons remplir le reste de notre `stdin` avec des octets random (ou mettre un \n). 
+- Nous allons par la suite trouver l'adresse de retour afin de pouvoir la modifier, pour jump sur notre shellcode qui se trouve à l'adresse du premier `buffer de stdin (+7 pour la chaîne de caractères "dat_wil")`.
+- En regardant dans gdb on se rend compte que notre adresse de retour se trouve à `+79 octets` en partant de notre second `buffer (stdin)`, c'est là qu'il faut écrire l'adresse ou se trouve notre `shellcode` pour qu'il soit executer.
 
 
 

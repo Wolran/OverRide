@@ -42,12 +42,12 @@ int __cdecl main(int argc, const char **argv, const char **envp)
 
 | Nom | Description |
 | --- | ----------- |
-| `<main>` | Envois la valeur de notre stdin a l'intérieur de la variable `v4` et la compare à `5276`, si cette valeur est identique cela nous donne acces a un shell en temp qu'utilisateur level01.|
+| `<main>` | Envois la valeur de notre stdin à l'intérieur de la variable `v4` et la compare à `5276`, si cette valeur est identique cela nous donne accès a un shell en temp qu'utilisateur level01.|
 
 
 
 #### Conclusions:
-Nous allons juste donner le bon mot de passe `5276` pour acceder au shell et pouvoir afficher le pass de level01.
+Nous allons juste donner le bon mot de passe `5276` pour accéder au shell et pouvoir afficher le pass de level01.
 
 
 ----

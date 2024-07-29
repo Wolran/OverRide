@@ -75,21 +75,21 @@ int __cdecl main(int argc, const char **argv, const char **envp)
 
 | Nom | Description |
 | --- | ----------- |
-| `<main>` | Le main nous demande un nom d'utilisateur et le sock dans la variable `s`, puis un Serial qui est un mot de passe encrypter en fonction de votre login. Il va ensuite appeler la fonction `<auth>` avec votre nom d'utilisateur et le Serial.|
-| `<auth>` | La fonction auth modifie notre login avec beaucoup d'operation puis compare avec le Serial que l'on a donné.|
+| `<main>` | Le main nous demande un nom d'utilisateur et le stock dans la variable `s`, puis un Serial qui est un mot de passe encrypter en fonction de votre login. Il va ensuite appeler la fonction `<auth>` avec votre nom d'utilisateur et le Serial.|
+| `<auth>` | La fonction auth modifie notre login avec beaucoup d'opérations puis compare avec le Serial que l'on a donné.|
 
 
 #### Conclusions:
-Il faut trouver une solution pour avoir le même Serial que notre login apres etre passer dans la fonction `<auth>`.
+Il faut trouver une solution pour avoir le même Serial que notre login après être passer dans la fonction `<auth>`.
 
 ----
 Résolution:
 ----
 Il y a 2 moyens d'obtenir le bon Serial:
-- Comprendre tout les calculs qui sont fait dans la fonction auth et les faire en parallèle.
-- Ou ... Bah changer la fonction auth de notre coté pour afficher directement le bon Serial...
+- Comprendre tous les calculs qui sont faits dans la fonction auth et les faire en parallèle.
+- Ou ... Bah changer la fonction auth de notre côté pour afficher directement le bon Serial...
 
-On reprend juste le code du programe en enlevant toutes les sécurités:
+On reprend juste le code du programme en enlevant toutes les sécurités:
 ```c
 
 #include <stdio.h>
@@ -121,7 +121,7 @@ int main(int argc, const char **argv, const char **envp)
   	return 0;
 }
 ```
-Avec le login: `"Le_meilleur_CUB3D"` (aller le voir il est exeptionel ♥), cela nous donne le Serial: `6240307`
+Avec le login: `"Le_meilleur_CUB3D"` (aller le voir, il est exceptionnel ♥), cela nous donne le Serial: `6240307`
 
 
 

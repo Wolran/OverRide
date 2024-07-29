@@ -74,23 +74,21 @@ int __fastcall main(int argc, const char **argv, const char **envp)
 
 | Nom | Description |
 | --- | ----------- |
-| `<main>` | Notre Programme, en 64bits, commence par ouvrir le fichier `/home/users/level03/.pass` et copie le contenu dans un string `ptr`, le programme nous demande par la suite notre nom d'utilisateur depuis `stdin` et le place dans la variable `<s>` (ce nom d'utilisateur sera printf plus tard). Il nous demande maintenant un mot de passe en `stdin` qu'il va ensuite comparer au `password` de `level03`. Dans le cas ou nous avons le bon mot de passe cela nous ouvre un `shell` en temps que `level03` sinon ca nous print `"does not have access!"`|
+| `<main>` | Notre Programme, en 64bits, commence par ouvrir le fichier `/home/users/level03/.pass` et copie le contenu dans un string `ptr`, le programme nous demande par la suite notre nom d'utilisateur depuis `stdin` et le place dans la variable `<s>` (ce nom d'utilisateur sera printf plus tard). Il nous demande maintenant un mot de passe en `stdin` qu'il va ensuite comparer au `password` de `level03`. Dans le cas où nous aurions le bon mot de passe, cela nous ouvre un `shell` en tant que `level03` sinon ça nous print `"does not have access!"`|
 
 
 #### Conclusions:
-Nous savons que notre mot de passe est stoquer, dans la stack, dans la variable `<ptr>`. \
-Nous savons que nous pouvons remonter dans la stack grace à notre stdin de user qui est lu betement par printf.
-```c
-Effectivement printf utiliser de cette maniere: "printf(s)" (sans argument) permet d'injecter des points d'injections (%s / %c / %n / ex..) qui nous permettent de remonter dans la stack.
-```
+Nous savons que notre mot de passe est stoqué, dans la stack, dans la variable `<ptr>`. \
+Nous savons que nous pouvons remonter dans la stack grâce à notre stdin de user qui est lu bêtement par printf.
+> Effectivement printf utiliser de cette manière: "printf(s)" (sans argument) permet d'injecter des points d'injections (%s / %c / %n / ex..) qui nous permettent de remonter dans la stack.
 
 
 ----
 Résolution:
 ----
 Nous devons trouver ou dans la stack ou est stocker `<ptr>` et lire son contenu. \
-Nous devons ensuite remonter de printf en faisant des points d'injections jusqu'a tomber sur `<ptr>` puis afficher chaque groupe de 8octets (nous sommes en 64bits) avec printf `%lx`. \
-Ensuite nous devons transformer chaque octets en caractere, cela nous donne ca:
+Nous devons ensuite remonter de printf en faisant des points d'injections jusqu'à tomber sur `<ptr>` puis afficher chaque groupe de 8octets (nous sommes en 64bits) avec printf `%lx`. \
+Ensuite, nous devons transformer chaque octets en caractère, cela nous donne ça:
 
 >ptr brut (%lx * 5): "756e50523437684845414a3561733951377a7143574e6758354a35686e47587348336750664b394d"
 
@@ -98,9 +96,9 @@ Ensuite nous devons transformer chaque octets en caractere, cela nous donne ca:
 
 Malheureusement si on le test en mot de passe cela ne fonctionne pas...
 
-La cause ? nous sommes en little endian, il faudra donc retourner nos blocs de 8 octets un par un...
+La cause ? Nous sommes en little endian, il faudra donc retourner nos blocs de 8 octets un par un...
 
-En commande python cela donne quelque chose comme ca:
+En commande python cela donne quelque chose comme ça:
 
 > 756e505234376848 | 45414a3561733951 | 377a7143574e6758 | 354a35686e475873 | 48336750664b394d
 
@@ -111,7 +109,7 @@ python -c "print('\x75\x6e\x50\x52\x34\x37\x68\x48'[::-1] + '\x45\x41\x4a\x35\x6
 
 
 #### Injection:
-Mais ici on fait dev, on fait pas les choses a la mains donc on a fait directement un programme python qui fait absolument tout ce que j'ai dit precedement: 
+Mais ici, on fait dev, on ne fait pas les choses a la main donc on a fait directement un programme python qui fait absolument tout ce que j'ai dit précédemment: 
 ```python
 import binascii
 import os

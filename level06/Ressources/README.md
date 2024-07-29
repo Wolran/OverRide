@@ -130,4 +130,4 @@ Avec le login: `"Le_meilleur_CUB3D"` (aller le voir, il est exceptionnel ♥), c
 (echo "Le_meilleur_CUB3D"; echo "6240307"; echo $(echo 'cat /home/users/level07/.pass')) | ./level06
 ```
 
-**Flag :** GbcPDRgsFK77LNnnuh7QyFYA2942Gp8yKj9KrWD8
+#### Flag: `GbcPDRgsFK77LNnnuh7QyFYA2942Gp8yKj9KrWD8`

